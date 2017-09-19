@@ -15,27 +15,27 @@ namespace TTT
             state = new Board();
             while (!state.IsFull)
             {
-                
+
                 int x, y;
                 do
-                { 
+                {
                     var coord = "";
                     do
                     {
-                       
+
                         state.ToString();
                         Console.Write("\n\nWhere to place? : ");
                         coord = Console.ReadLine();
                     } while (coord.Length != 2);
                     x = (int)System.Char.GetNumericValue(coord[0]);
                     y = (int)System.Char.GetNumericValue(coord[1]);
-                }while(!state.EmptyIndex.Contains(new Space(x,y)));
+                } while (!state.GetEmptyIndex.Contains(new Space(x, y)));
                 state[x, y] = Piece.O;
                 if (CheckForWinners())
                 {
                     Main(null);
                 }
-                if(state.EmptyIndex.Count == state.Size)
+                if (state.GetEmptyIndex.Count == state.Size)
                 {
                     var r = new Random();
                     s = new Space(r.Next(0, 3), r.Next(0, 3));
@@ -55,7 +55,6 @@ namespace TTT
         public static bool CheckForWinners()
         {
             Piece? p = AI.HeuristicFunction(state);
-
             if (p == Piece.X)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
