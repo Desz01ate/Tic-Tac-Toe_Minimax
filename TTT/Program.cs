@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -12,8 +13,8 @@ namespace TTT
         public static int level = 0;
         static void Main(string[] args)
         {
-            Console.WindowHeight = Console.LargestWindowHeight;
-            Console.WindowWidth = Console.LargestWindowWidth;
+            Console.WindowHeight = Console.LargestWindowHeight/2;
+            Console.WindowWidth = Console.LargestWindowWidth/2;
             
             do
             {
@@ -21,13 +22,40 @@ namespace TTT
                 Console.Write("What difficult should the AI be ([E]asy,[M]edium,[H]ard) : ");
                 var chooseLevel = Console.ReadLine();
                 if (chooseLevel == "E")
-                    level = 1;
-                else if (chooseLevel == "M")
                     level = 2;
+                else if(chooseLevel == "M")
+                    level = 4;
                 else if (chooseLevel == "H")
-                    level = 999;
+                    level = 10;
             } while (level == 0);
             GameStart(level);
+            //AIvsAV();
+        }
+
+        private static void AIvsAV()
+        {
+            Space AIState, AIState2;
+            Board GameBoard = new Board();
+            while (!GameBoard.IsFull)
+            {
+                
+                AIState2 = new AI().MiniMax(GameBoard, Piece.O,level);
+                GameBoard[AIState2.X, AIState2.Y] = Piece.O;
+                GameBoard.ToString();
+                if (CheckForWinners(GameBoard))
+                {
+                    Main(null);
+                }
+                Thread.Sleep(1000);
+                AIState = new AI().MiniMax(GameBoard, Piece.X,level);
+                GameBoard[AIState.X, AIState.Y] = Piece.X;
+                GameBoard.ToString();
+                if (CheckForWinners(GameBoard))
+                {
+                    Main(null);
+                }
+                Thread.Sleep(1000);
+            }
         }
 
         private static void GameStart(int level)
@@ -55,7 +83,7 @@ namespace TTT
                 {
                     Main(null);
                 }
-                AIState = AI.MiniMax(GameBoard, Piece.X, level);
+                AIState = new AI().MiniMax(GameBoard, Piece.X, level);
                 GameBoard[AIState.X, AIState.Y] = Piece.X;
                 GameBoard.ToString();
                 if (CheckForWinners(GameBoard))

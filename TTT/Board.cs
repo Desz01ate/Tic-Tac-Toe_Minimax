@@ -70,17 +70,19 @@ namespace TTT
         {
             var newCloneBoard = new Board();
             newCloneBoard.squares = (Piece[,])this.squares.Clone();
+            newCloneBoard.Rank = this.Rank;
             return newCloneBoard;
         }
         public override string ToString()
         {
             Console.Clear();
             var mode = "";
-            if(Program.level == 1)
+            if(Program.level == 2)
             {
-                Console.ForegroundColor = ConsoleColor.Green;
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
                 mode = "EASY";
-            }else if(Program.level == 2)
+            }
+            else if(Program.level == 4)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 mode = "MEDIUM";
@@ -88,7 +90,7 @@ namespace TTT
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                mode = "HELL";
+                mode = "HARD";
             }
             var arr = new[]{
                         @"            |                                                               |       ",

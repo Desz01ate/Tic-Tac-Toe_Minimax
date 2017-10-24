@@ -1,33 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace TTT
 {
     class AI
     {
         public static int DeepLevel { get; set; }
-        public static Space MiniMax(Board state, Piece p,int Rank = 999)
+        public Space MiniMax(Board state, Piece p,int Rank = 999)
         {
             DeepLevel = Rank;
             return Max(state, p);
         }
-        private static Space Max(Board state,Piece p)
+        private Space Max(Board state,Piece p)
         {
-
             Space? bestSpace = null;
             List<Space> openSpaces = state.GetEmptySpaces; //determine the free spaces first
-            Board newBoard;
+            Board newBoard = null;
             for (int i = 0; i < openSpaces.Count; i++) //looping over the free spaces 
             {
                 newBoard = state.Clone(); //clone the current board
                 Space newSpace = openSpaces[i];
                 newBoard[newSpace.X, newSpace.Y] = p; //try moving on the current board using the new free space
                 newBoard.Rank += 1;
-                if (HeuristicFunction(newBoard) == 0 && newBoard.GetEmptySpaces.Count > 0 && newBoard.Rank < DeepLevel) 
+                Debug.WriteLine(newBoard.Rank);
+                if (HeuristicFunction(newBoard) == 0 && newBoard.GetEmptySpaces.Count > 0 && newBoard.Rank <= DeepLevel) 
                 //if the heuristic is calculated and still not able to win also there are more spaces to play then we try to push-down the opponent win rate
-                {
-                    
-                    var piece = p == Piece.O ? Piece.X : Piece.O; //let's switch the player piece
+                {                  
+                    var piece = p == Piece.O ? Piece.X : Piece.O; //let's switch the player piece               
                     Space tempMove = Min(newBoard, piece);  //we need to go deeper :p
                     newSpace.Utility = tempMove.Utility; //memorize the utility of the new space
                 }
@@ -45,14 +45,15 @@ namespace TTT
                     #endregion
                     newSpace.Utility = (int)HeuristicFunction(newBoard) * -1; 
                 }
-                if (bestSpace == null || (p == Piece.X && newSpace.Utility < ((Space)bestSpace).Utility)) //if new space utility is higher for AI than the previous one, just grab it :p
+                if (bestSpace == null || newSpace.Utility < ((Space)bestSpace).Utility) //if new space utility is higher for AI than the previous one, just grab it :p
                 {
                     bestSpace = newSpace;
                 }
             }
+            
             return bestSpace == null ? new Space() { }:(Space)bestSpace;
         }
-        private static Space Min(Board state,Piece p)
+        private Space Min(Board state,Piece p)
         {
             Space? bestSpace = null;
             List<Space> openSpaces = state.GetEmptySpaces;
@@ -63,7 +64,7 @@ namespace TTT
                 Space newSpace = openSpaces[i];
                 newBoard[newSpace.X, newSpace.Y] = p;
                 newBoard.Rank += 1;
-                if (HeuristicFunction(newBoard) == 0 && newBoard.GetEmptySpaces.Count > 0 && newBoard.Rank < DeepLevel)
+                if (HeuristicFunction(newBoard) == 0 && newBoard.GetEmptySpaces.Count > 0 && newBoard.Rank <= DeepLevel)
                 {
                     
                     var piece = p == Piece.O ? Piece.X : Piece.O;
@@ -84,7 +85,7 @@ namespace TTT
                     #endregion
                     newSpace.Utility = (int)HeuristicFunction(newBoard) * -1;
                 }
-                if (bestSpace == null || (p == Piece.O && newSpace.Utility > ((Space)bestSpace).Utility)) //if new space utility is lower for opponent than the previous one, just grab it :p
+                if (bestSpace == null || newSpace.Utility > ((Space)bestSpace).Utility) //if new space utility is lower for opponent than the previous one, just grab it :p
                 {
                     bestSpace = newSpace;
                 }
