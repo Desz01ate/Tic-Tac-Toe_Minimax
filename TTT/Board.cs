@@ -50,7 +50,7 @@ namespace TTT
                 return true;
             }
         }
-        public List<Space> GetEmptyIndex
+        public List<Space> GetEmptySpaces
         {
             get
             {
@@ -66,9 +66,9 @@ namespace TTT
         }
         public Board Clone()
         {
-            var b = new Board();
-            b.squares = (Piece[,])this.squares.Clone();
-            return b;
+            var newCloneBoard = new Board();
+            newCloneBoard.squares = (Piece[,])this.squares.Clone();
+            return newCloneBoard;
         }
         public override string ToString()
         {

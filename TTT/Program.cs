@@ -8,51 +8,59 @@ namespace TTT
 {
     class Program
     {
-        static Board state;
         static void Main(string[] args)
         {
-            Space s;
-            state = new Board();
-            while (!state.IsFull)
+            Space AIState;
+            Board GameBoard = new Board();
+            while (!GameBoard.IsFull)
             {
-
                 int x, y;
+                //Player Turn
                 do
                 {
                     var coord = "";
                     do
                     {
-
-                        state.ToString();
+                        GameBoard.ToString();
                         Console.Write("\n\nWhere to place? : ");
                         coord = Console.ReadLine();
                     } while (coord.Length != 2);
                     x = (int)System.Char.GetNumericValue(coord[0]);
                     y = (int)System.Char.GetNumericValue(coord[1]);
-                } while (!state.GetEmptyIndex.Contains(new Space(x, y)));
-                state[x, y] = Piece.O;
-                if (CheckForWinners())
+                } while (!GameBoard.GetEmptySpaces.Contains(new Space(x, y)));
+                GameBoard[x, y] = Piece.O;
+                if (CheckForWinners(GameBoard))
                 {
                     Main(null);
                 }
-                if (state.GetEmptyIndex.Count == state.Size)
+#region .
+                /*
+                if (GameBoard.GetEmptyIndex.Count == GameBoard.Size)
                 {
                     var r = new Random();
-                    s = new Space(r.Next(0, 3), r.Next(0, 3));
+                    AIState = new Space(r.Next(0, 3), r.Next(0, 3));
                 }
+                //End Player Turn
+                //AI Turn
                 else
                 {
-                    s = AI.MiniMax(state, Piece.X);
+                    AIState = AI.MiniMax(GameBoard, Piece.X);
                 }
-                state[s.X, s.Y] = Piece.X;
-                state.ToString();
-                if (CheckForWinners())
+                */
+#endregion
+                //End Player Turn
+                //AI Turn
+                AIState = AI.MiniMax(GameBoard, Piece.X);
+                GameBoard[AIState.X, AIState.Y] = Piece.X;
+                GameBoard.ToString();
+                if (CheckForWinners(GameBoard))
                 {
                     Main(null);
                 }
+                //End AI Turn
             }
         }
-        public static bool CheckForWinners()
+        public static bool CheckForWinners(Board state)
         {
             Piece? p = AI.HeuristicFunction(state);
             if (p == Piece.X)
@@ -63,7 +71,7 @@ namespace TTT
                 Console.ForegroundColor = ConsoleColor.Gray;
                 return true;
             }
-            else if (p == Piece.O) //sad that this one will never be reached.
+            else if (p == Piece.O)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("YOU WIN!");
