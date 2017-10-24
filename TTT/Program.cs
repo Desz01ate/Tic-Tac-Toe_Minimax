@@ -11,6 +11,7 @@ namespace TTT
     class Program
     {
         public static int level = 0;
+        public static bool AIGoFirst;
         static void Main(string[] args)
         {
             Console.WindowHeight = Console.LargestWindowHeight/2;
@@ -24,10 +25,20 @@ namespace TTT
                 if (chooseLevel == "E")
                     level = 2;
                 else if(chooseLevel == "M")
-                    level = 4;
+                    level = 5;
                 else if (chooseLevel == "H")
                     level = 10;
             } while (level == 0);
+            for (var i = 0; i < 20; i++)
+            {
+                Console.Write("\rDetermining who go first [" + string.Concat(Enumerable.Repeat("#",i)).PadRight(19) + "]");
+                Thread.Sleep(30);
+            }
+            var r = new Random();
+            AIGoFirst = r.Next(0, 2) > 0.5;
+            var goFirstResult = AIGoFirst?"AI":"PLAYER";
+            Console.WriteLine($"\n{goFirstResult} GO FIRST!");
+            Console.ReadKey();
             GameStart(level);
             //AIvsAV();
         }
@@ -62,6 +73,16 @@ namespace TTT
         {
             Space AIState, AIState2;
             Board GameBoard = new Board();
+            if (AIGoFirst)
+            {
+                AIState = new AI().MiniMax(GameBoard, Piece.X, level);
+                GameBoard[AIState.X, AIState.Y] = Piece.X;
+                GameBoard.ToString();
+                if (CheckForWinners(GameBoard))
+                {
+                    Main(null);
+                }
+            }
             while (!GameBoard.IsFull)
             {
                 int x, y;

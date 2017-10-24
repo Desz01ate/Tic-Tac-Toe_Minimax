@@ -82,7 +82,7 @@ namespace TTT
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                 mode = "EASY";
             }
-            else if(Program.level == 4)
+            else if(Program.level == 5)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 mode = "MEDIUM";

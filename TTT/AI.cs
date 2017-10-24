@@ -23,7 +23,6 @@ namespace TTT
                 Space newSpace = openSpaces[i];
                 newBoard[newSpace.X, newSpace.Y] = p; //try moving on the current board using the new free space
                 newBoard.Rank += 1;
-                Debug.WriteLine(newBoard.Rank);
                 if (HeuristicFunction(newBoard) == 0 && newBoard.GetEmptySpaces.Count > 0 && newBoard.Rank <= DeepLevel) 
                 //if the heuristic is calculated and still not able to win also there are more spaces to play then we try to push-down the opponent win rate
                 {                  
