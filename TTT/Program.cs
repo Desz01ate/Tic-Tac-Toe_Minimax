@@ -2,15 +2,37 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TTT
 {
     class Program
     {
+        public static int level = 0;
         static void Main(string[] args)
         {
-            Space AIState;
+            Console.WindowHeight = Console.LargestWindowHeight;
+            Console.WindowWidth = Console.LargestWindowWidth;
+            
+            do
+            {
+                Console.Clear();
+                Console.Write("What difficult should the AI be ([E]asy,[M]edium,[H]ard) : ");
+                var chooseLevel = Console.ReadLine();
+                if (chooseLevel == "E")
+                    level = 1;
+                else if (chooseLevel == "M")
+                    level = 2;
+                else if (chooseLevel == "H")
+                    level = 999;
+            } while (level == 0);
+            GameStart(level);
+        }
+
+        private static void GameStart(int level)
+        {
+            Space AIState, AIState2;
             Board GameBoard = new Board();
             while (!GameBoard.IsFull)
             {
@@ -33,36 +55,20 @@ namespace TTT
                 {
                     Main(null);
                 }
-#region .
-                /*
-                if (GameBoard.GetEmptyIndex.Count == GameBoard.Size)
-                {
-                    var r = new Random();
-                    AIState = new Space(r.Next(0, 3), r.Next(0, 3));
-                }
-                //End Player Turn
-                //AI Turn
-                else
-                {
-                    AIState = AI.MiniMax(GameBoard, Piece.X);
-                }
-                */
-#endregion
-                //End Player Turn
-                //AI Turn
-                AIState = AI.MiniMax(GameBoard, Piece.X);
+                AIState = AI.MiniMax(GameBoard, Piece.X, level);
                 GameBoard[AIState.X, AIState.Y] = Piece.X;
                 GameBoard.ToString();
                 if (CheckForWinners(GameBoard))
                 {
                     Main(null);
                 }
-                //End AI Turn
             }
         }
+
         public static bool CheckForWinners(Board state)
         {
             Piece? p = AI.HeuristicFunction(state);
+            state.ToString();
             if (p == Piece.X)
             {
                 Console.ForegroundColor = ConsoleColor.Red;

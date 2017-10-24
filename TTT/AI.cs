@@ -1,15 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TTT
 {
     class AI
     {
-        public static Space MiniMax(Board state, Piece p)
+        public static int DeepLevel { get; set; }
+        public static Space MiniMax(Board state, Piece p,int Rank = 999)
         {
+            DeepLevel = Rank;
             return Max(state, p);
         }
         private static Space Max(Board state,Piece p)
         {
+
             Space? bestSpace = null;
             List<Space> openSpaces = state.GetEmptySpaces; //determine the free spaces first
             Board newBoard;
@@ -18,10 +22,11 @@ namespace TTT
                 newBoard = state.Clone(); //clone the current board
                 Space newSpace = openSpaces[i];
                 newBoard[newSpace.X, newSpace.Y] = p; //try moving on the current board using the new free space
-
-                if (HeuristicFunction(newBoard) == 0 && newBoard.GetEmptySpaces.Count > 0) 
+                newBoard.Rank += 1;
+                if (HeuristicFunction(newBoard) == 0 && newBoard.GetEmptySpaces.Count > 0 && newBoard.Rank < DeepLevel) 
                 //if the heuristic is calculated and still not able to win also there are more spaces to play then we try to push-down the opponent win rate
                 {
+                    
                     var piece = p == Piece.O ? Piece.X : Piece.O; //let's switch the player piece
                     Space tempMove = Min(newBoard, piece);  //we need to go deeper :p
                     newSpace.Utility = tempMove.Utility; //memorize the utility of the new space
@@ -45,7 +50,7 @@ namespace TTT
                     bestSpace = newSpace;
                 }
             }
-            return (Space)bestSpace;
+            return bestSpace == null ? new Space() { }:(Space)bestSpace;
         }
         private static Space Min(Board state,Piece p)
         {
@@ -57,9 +62,10 @@ namespace TTT
                 newBoard = state.Clone();
                 Space newSpace = openSpaces[i];
                 newBoard[newSpace.X, newSpace.Y] = p;
-
-                if (HeuristicFunction(newBoard) == 0 && newBoard.GetEmptySpaces.Count > 0)
+                newBoard.Rank += 1;
+                if (HeuristicFunction(newBoard) == 0 && newBoard.GetEmptySpaces.Count > 0 && newBoard.Rank < DeepLevel)
                 {
+                    
                     var piece = p == Piece.O ? Piece.X : Piece.O;
                     Space tempMove = Max(newBoard, piece);
                     newSpace.Utility = tempMove.Utility;
@@ -83,7 +89,7 @@ namespace TTT
                     bestSpace = newSpace;
                 }
             }
-            return (Space)bestSpace;
+            return bestSpace == null ? new Space() { } : (Space)bestSpace;
         }
         public static Piece HeuristicFunction(Board board)
         {

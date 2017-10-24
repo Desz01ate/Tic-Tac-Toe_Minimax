@@ -64,6 +64,8 @@ namespace TTT
                 return empty;
             }
         }
+        public int Rank { get;  set; }
+
         public Board Clone()
         {
             var newCloneBoard = new Board();
@@ -73,16 +75,73 @@ namespace TTT
         public override string ToString()
         {
             Console.Clear();
-            Console.WriteLine("Tic Tac Toe using Minimax Algorithm {PLAYER = O,AI = X. PLACE BY USING COORDINATE COMBINATION OF XY (ie. 00,10,21)}\n\n");
+            var mode = "";
+            if(Program.level == 1)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                mode = "EASY";
+            }else if(Program.level == 2)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                mode = "MEDIUM";
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                mode = "HELL";
+            }
+            var arr = new[]{
+                        @"            |                                                               |       ",
+                        @"            |                     Tic Tac Toe                               |       ",
+                        @"            |                using Minimax Algorithm                        |       ",
+                        @"            |                  (PLAYER = O,AI = X)                          |       ",
+                        @"            |          _______                          ________            |       ",
+                       $@"            |         |ooooooo|      ____  {mode.PadLeft(6)} Mode | __  __ |           |       ",
+                        @"            |         |[]+++[]|     [____]             |/  \/  \|           |       ",
+                        @"            |         |+ ___ +|     ]()()[             |\__/\__/|           |       ",
+                        @"            |         |:|   |:|   ___\__/___           |[][][][]|           |       ",
+                        @"            |         |:|___|:|  |__|    |__|          |++++++++|           |       ",
+                        @"            |         |[]===[]|   |_|_/\_|_|           | ______ |           |       ",
+                        @"            |________ ||||||||| _ | | __ | | _________ ||______|| __________|       ",
+                        @"           /          |_______|   |_|[::]|_|           |________|           \       ",
+                        @"          /                       \_|_||_|_/                                 \      ",
+                        @"         /                          |_||_|        Beat Me                     \     ",
+                        @"        /                          _|_||_|_           If you can               \    ",
+                        @"       /                  ____    |___||___|                                    \   ",
+                        @"      /                                                                          \  "
+            };
+            Console.WriteLine("\n\n");
+            foreach (string line in arr)
+                Console.WriteLine(line);
+            Console.WriteLine("");
+            Console.ForegroundColor = ConsoleColor.Gray;
             for (var y = 0; y < squares.GetLength(0); y++)
             {
                 for (var x = 0; x < squares.GetLength(1); x++)
                 {
-                    Console.Write($"\t\t{squares[y, x]}");
+
+                    var avMove = Convert.ToString(squares[y, x]);
+                    if(squares[y,x] == Piece._)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        avMove = $"{y}{x}";
+
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = avMove == Piece.O.ToString() ? ConsoleColor.White : ConsoleColor.Red;
+                    }
+                    Console.Write($"\t\t{avMove}\t\t");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    if(x != squares.GetLength(1) - 1)
+                    {
+                        Console.Write("|");
+                    }
+                    //Console.Write($"\t\t{squares[y, x]}");
                 }
-                Console.WriteLine();
-            }
-            return null;
-        }
+                Console.WriteLine("\n");
+            }                          
+            return null;                    
+        }                                   
     }
 }
